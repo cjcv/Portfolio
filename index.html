@@ -18,16 +18,39 @@
                 height: 50vh;
                 width: 50vh;
             }
-            
+            .no-seleccionable {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none; 
+            }
         </style>
-        <script>
-            
-        </script>
+        
     </head>
     <body>
-        <header></header>
-        <div>
-            <canvas></canvas>
+        <header>
+            <h1>Jimena's portofolio</h1>
+        </header>
+        <div class="no-seleccionable">
+            <canvas ></canvas>
+           
+        </div>
+        <div id="mando">
+            <button>izquierda</button>
+            <button>derecha</button>
         </div>
     </body>
+    <script>
+        var Mando = document.getElementById("mando");
+
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+        {
+            console.log("Movil");
+        }
+        else{
+            // false for not mobile device
+            console.log("ordenador");
+            Mando.style.display = "none";
+        }
+    </script>
 </html>
