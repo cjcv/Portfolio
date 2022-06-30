@@ -131,8 +131,9 @@
                 balas[index].y -= 1;
                 console.log(balas[index].y);
                 ctx.rect(balas[index].x, balas[index].y, 5, 5);
-                if(balas[index].y < 100){
-                    balas.slice(index, index);
+                if(balas[index].y < 0){
+                    
+                    balas.shift();
                     console.log("ADIOS");
                 }
             }
