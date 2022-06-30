@@ -41,7 +41,7 @@
                 height: 10vh;
             }
             button {
-                width: 22vh;
+                width: 14vh;
                 height: 10vh;
             }
         </style>
@@ -54,6 +54,7 @@
             <canvas id="canvas"></canvas>
             <div id="mando">
                 <button id="izq">izquierda</button>
+                <button id="disparar">derecha</button>
                 <button id="der">derecha</button>
             </div>
         </div>
@@ -64,15 +65,17 @@
         const ctx = canvas.getContext("2d");
 
         var direccion = 0;
-        var posiciony = canvas.width/2-25;
+        var posicionx = canvas.width/2-25;
         var vidas = 3;
+
+        var balas = [];
 
         var Mando = document.getElementById("mando");
         if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
         {
             console.log("Movil");
             document.getElementById("izq").addEventListener("touchstart", event => {
-                direccion = -2;
+                direccion = -4;
                 console.log(direccion);
             });
             document.getElementById("izq").addEventListener("touchend", event => {
@@ -80,11 +83,16 @@
                 console.log(direccion);
             });
             document.getElementById("der").addEventListener("touchstart", event => {
-                direccion = 2;
+                direccion = 4;
                 console.log(direccion);
             });
             document.getElementById("der").addEventListener("touchend", event => {
                 direccion = 0;
+                console.log(direccion);
+            });
+
+            document.getElementById("disparar").addEventListener("touchend", event => {
+                var i = balas.push(new balas);
                 console.log(direccion);
             });
         }
@@ -97,26 +105,39 @@
 
             function keyDownHandler(e) {
                 if(e.keyCode == 39) {
-                    direccion = 2;
+                    direccion = 4;
                 }
                 else if(e.keyCode == 37) {
-                    direccion = -2;
+                    direccion = -4;
                 }
             }
             function keyUpHandler(e) {
                 if(e.keyCode == 39 || e.keyCode == 37) {
                     direccion = 0;
                 }
+                else {
+                    var i = balas.push(new bala(posicionx, canvas.height-7));
+                }
             }            
         }
 
         function draw(){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            posiciony += direccion;
-
             ctx.beginPath();
+
+            posicionx += direccion;
+
+            for (let index = 0; index < balas.length; index++) {
+                balas[index].y -= 1;
+                console.log(balas[index].y);
+                ctx.rect(balas[index].x, balas[index].y, 5, 5);
+                if(balas[index].y < 100){
+                    balas.slice(index, index);
+                    console.log("ADIOS");
+                }
+            }
             
-            ctx.rect(posiciony, canvas.height-7, 50, 5);
+            ctx.rect(posicionx, canvas.height-7, 50, 5);
             ctx.fillStyle = "#000000";
             ctx.fill();
             ctx.closePath();
@@ -124,7 +145,14 @@
             requestAnimationFrame(draw);
         }
 
+        class bala {
+            constructor(x,y){
+                this.x = x;
+                this.y = y;
+            }
+        }
+
         draw();
-        //comentarios generales mirar si se puede cambiar el aspect ratio
+        //comentarios generales mirar si se puede detectar el aspect ratio para elegir las medidas del cavas
     </script>
 </html>
