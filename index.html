@@ -60,16 +60,37 @@
         </div>
     </body>
     <script>
-        
+        //Declarar lienzo
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
 
+        //Clases
+       
+        class bala {
+            constructor(x,y, velocidad){
+                this.x = x + 12.5;
+                this.y = y;
+                this.velocidad = velocidad;
+            }
+        }
+        class marcianito {
+            constructor(x, y){
+                this.x = x + 35;
+                this.y = y + 15;
+                this.color = "#000000";
+            }
+
+            dibujar() {
+                ctx.rect(this.x, this.y, 30, 15);
+            }
+        }
+        
+        //Variables jugador
         var direccion = 0;
         var posicionx = canvas.width/2-25;
         var vidas = 3;
-
         var balas = [];
-
+        //Controles
         var Mando = document.getElementById("mando");
         if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
         {
@@ -92,7 +113,7 @@
             });
 
             document.getElementById("disparar").addEventListener("touchend", event => {
-                var i = balas.push(new balas);
+                var i = balas.push(new bala(posicionx, canvas.height-7, -1));
                 console.log(direccion);
             });
         }
@@ -105,6 +126,7 @@
 
             function keyDownHandler(e) {
                 if(e.keyCode == 39) {
+                    
                     direccion = 4;
                 }
                 else if(e.keyCode == 37) {
@@ -116,29 +138,54 @@
                     direccion = 0;
                 }
                 else {
-                    var i = balas.push(new bala(posicionx, canvas.height-7));
+                    var i = balas.push(new bala(posicionx, canvas.height-7, -1));
                 }
             }            
         }
+        //Declararaciones objetos
+        var marcianitos = [];
+        for (let i = 0; i < 4; i++) {
+            for (let a = 0; a < 5; a++) {
+                marcianitos.push(new marcianito(a*50, i*20));
+            }
+        }
 
         function draw(){
+            //Lienzo
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
-
+            
+            //Actualizar jugador
             posicionx += direccion;
-
-            for (let index = 0; index < balas.length; index++) {
-                balas[index].y -= 1;
-                console.log(balas[index].y);
-                ctx.rect(balas[index].x, balas[index].y, 5, 5);
-                if(balas[index].y < 0){
-                    
-                    balas.shift();
-                    console.log("ADIOS");
+            ctx.rect(posicionx, canvas.height-7, 50, 5);
+                //Actualizar balas
+            for( let index = 0; index < balas.length; index++){  
+                var x = balas[index].x;
+                var y = balas[index].y;
+                balas[index].y += balas[index].velocidad;
+                ctx.rect(x, y, 5, 5);
+                if ( balas[index].y < 0) { 
+                    balas.splice(index, 1); 
+                    index--; 
+                    console.log(9);
+                }
+                else {
+                    for (let a = 0; a < marcianitos.length; a++) {
+                        if (x > marcianitos[a].x && x < marcianitos[a].x + 30 && y > marcianitos[a].y && y < marcianitos[a].y + 15) {
+                            console.log(y);
+                            console.log(marcianitos[0]);
+                            balas.splice(index, 1); 
+                            index--; 
+                            marcianitos.splice(a, 1); 
+                            a--; 
+                        }
+                    }
                 }
             }
             
-            ctx.rect(posicionx, canvas.height-7, 50, 5);
+            for( let index = 0; index < marcianitos.length; index++){  
+                marcianitos[index].dibujar();
+            }
             ctx.fillStyle = "#000000";
             ctx.fill();
             ctx.closePath();
@@ -146,12 +193,7 @@
             requestAnimationFrame(draw);
         }
 
-        class bala {
-            constructor(x,y){
-                this.x = x;
-                this.y = y;
-            }
-        }
+        
 
         draw();
         //comentarios generales mirar si se puede detectar el aspect ratio para elegir las medidas del cavas
