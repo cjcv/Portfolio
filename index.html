@@ -18,7 +18,7 @@
                 align-items: center;
             }
             canvas {
-                background-color: rgb(117, 117, 117);
+                background-color: rgb(105, 161, 235);
                 height: 45vh;
                 
             }
@@ -31,18 +31,21 @@
                 display: inline-flex;
                 flex-direction: column;
 
-                background-color: rgb(117, 117, 117);
+                background-color: rgb(105, 161, 235);
                 width: 45vh;
-                border: 0.5vw solid rgb(117, 117, 117);
+                border: 0.5vw solid rgb(105, 161, 235);
                 border-radius: 1vh;
             }
             #mando {
-                background-color: black;
+                background-color: rgb(20, 41, 108);
                 height: 10vh;
             }
             button {
                 width: 14vh;
                 height: 10vh;
+            }
+            .sprite {
+                display: none;
             }
         </style>
     </head>
@@ -52,6 +55,8 @@
         </header>
         <div class="no-seleccionable">
             <canvas id="canvas"></canvas>
+            <img id="nave" class="sprite" src="nave.png">
+            <img id="marcianito" class="sprite" src="Marcianito.png">
             <div id="mando">
                 <button id="izq">izquierda</button>
                 <button id="disparar">derecha</button>
@@ -63,12 +68,15 @@
         //Declarar lienzo
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
-
+        ctx.imageSmoothingEnabled = false;
+        var image = document.getElementById('nave');
+        var marciano = document.getElementById('marcianito');
+        
         //Clases
        
         class bala {
             constructor(x,y, velocidad){
-                this.x = x + 12.5;
+                this.x = x + 22.5;
                 this.y = y;
                 this.velocidad = velocidad;
             }
@@ -81,7 +89,8 @@
             }
 
             dibujar() {
-                ctx.rect(this.x, this.y, 30, 15);
+                ctx.drawImage(marciano, this.x, this.y, 30, 15);
+                //ctx.rect(this.x, this.y, 30, 15);
             }
         }
         
@@ -144,9 +153,9 @@
         }
         //Declararaciones objetos
         var marcianitos = [];
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0.5; i < 3; i++) {
             for (let a = 0; a < 5; a++) {
-                marcianitos.push(new marcianito(a*50, i*20));
+                marcianitos.push(new marcianito(a*50, i*25));
             }
         }
 
@@ -156,8 +165,19 @@
             ctx.beginPath();
             
             //Actualizar jugador
-            posicionx += direccion;
-            ctx.rect(posicionx, canvas.height-7, 50, 5);
+            if (posicionx < 0) {
+                posicionx = 0;
+            }
+            else if(posicionx > 250){
+                posicionx = 250;
+            }
+            else if (posicionx >= 0 && posicionx <= 250){
+                posicionx += direccion;
+            }
+            
+            
+            console.log(posicionx);
+            ctx.drawImage(image, posicionx, canvas.height-27, 50, 25);
                 //Actualizar balas
             for( let index = 0; index < balas.length; index++){  
                 var x = balas[index].x;
@@ -171,7 +191,7 @@
                 }
                 else {
                     for (let a = 0; a < marcianitos.length; a++) {
-                        if (x > marcianitos[a].x && x < marcianitos[a].x + 30 && y > marcianitos[a].y && y < marcianitos[a].y + 15) {
+                        if (x > marcianitos[a].x - 5 && x < marcianitos[a].x + 30 && y > marcianitos[a].y && y < marcianitos[a].y + 15) {
                             console.log(y);
                             console.log(marcianitos[0]);
                             balas.splice(index, 1); 
@@ -192,10 +212,8 @@
 
             requestAnimationFrame(draw);
         }
-
         
-
         draw();
-        //comentarios generales mirar si se puede detectar el aspect ratio para elegir las medidas del cavas
+        //comentarios generales mirar si se puede detectar el aspect ratio para elegir las medidas del canvas
     </script>
 </html>
